@@ -85,7 +85,7 @@ db.serialize(() => {
     
     // 3. Cria Admin usando as credenciais do .env
     const adminEmail = process.env.ADMIN_EMAIL || 'admin@admin.com';
-    const adminPass = process.env.ADMIN_PASS || '12345678'; // Fallback se falhar o .env
+    const adminPass = process.env.ADMIN_PASSWORD || '123456'; // Fallback se falhar o .env
     const adminSenhaHash = bcrypt.hashSync(adminPass, 10);
     
     db.run(`INSERT OR IGNORE INTO usuarios (nome, email, senha, is_admin) VALUES ('Admin', ?, ?, 1)`, [adminEmail, adminSenhaHash]);
