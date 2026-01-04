@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meus Pedidos - Betel Canaã</title>
+    <style>
+        /* === ESTILOS GERAIS === */
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+        :root {
+            --cor-padrao: #e8c39e; --cor-padrao-hover: #fff6ed; --cor-fonte: #000;
+            --cor-fonte-p: #555; --cor-btn: #9e6730; --cor-btn-hover: #7a4f24;
+            --cor-btn-fonte: #fff; --cor-branco: #ffffff; --cor-cinza: #f5f5f5;
+            --cor-cinza-escuro: #e0e0e0; --sombra: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--cor-cinza);
+            color: var(--cor-fonte);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* === HEADER E NAVEGAÇÃO (PADRONIZADO) === */
+        header {
+            background: radial-gradient(#fff6ed, #e8c39e);
+            box-shadow: var(--sombra);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 5%;
+            max-width: 1400px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .logo { display: flex; align-items: center; line-height: 0; }
+        .logo img { width: 140px; height: auto; object-fit: contain; display: block; }
+
+        /* Menu Desktop */
+        #menu-mobile { flex: 1; text-align: right; }
+
+        .nav-links { display: flex; list-style: none; gap: 30px; justify-content: flex-end; align-items: center; }
+        .nav-links li { position: relative; }
+        
+        .nav-links a {
+            text-decoration: none;
+            color: var(--cor-fonte);
+            font-weight: 500;
+            padding: 8px 0;
+            transition: color 0.3s ease;
+        }
+        .nav-links a:hover { color: var(--cor-btn); }
+        .nav-links a::after {
+            content: ''; position: absolute; bottom: -5px; left: 0; width: 0; height: 2px;
+            background-color: var(--cor-btn); transition: width 0.3s ease;
+        }
+        .nav-links a:hover::after { width: 100%; }
+
+        /* Ícones do Header (Carrinho + Hambúrguer) */
+        .header-icons {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-left: 20px;
+        }
+
+        .carrinho-icon img { width: 30px; height: 30px; cursor: pointer; }
+
+        /* Botão do Menu Mobile */
+        .menu-icon {
+            display: none; /* Oculto no Desktop */
+            font-size: 35px;
+            color: var(--cor-fonte);
+            cursor: pointer;
+        }
+
+        /* === CONTEÚDO ESPECÍFICO DA PÁGINA === */
+        section { max-width: 1200px; margin: 40px auto; padding: 0 20px; width: 100%; flex: 1; }
+
+        .page-title {
+            text-align: center; font-size: 32px; margin-bottom: 30px;
+            color: var(--cor-fonte); position: relative; padding-bottom: 15px;
+        }
+        .page-title::after {
+            content: ""; position: absolute; bottom: 0; left: 50%;
+            transform: translateX(-50%); width: 80px; height: 3px;
+            background-color: var(--cor-btn); border-radius: 2px;
+        }
+
+        /* Header interno da área de pedidos */
+        .header-area { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 2px solid #ddd; padding-bottom: 15px; }
+        
+        .btn-senha { background: #333; color: #fff; padding: 8px 15px; text-decoration: none; border-radius: 5px; font-size: 14px; cursor: pointer; border: none; }
+        .btn-senha:hover { background: #555; }
+
+        /* Tabela */
+        .table-container { overflow-x: auto; background: var(--cor-branco); border-radius: 10px; box-shadow: var(--sombra); }
+        table { width: 100%; border-collapse: collapse; min-width: 600px; }
+        table th { background: var(--cor-padrao); padding: 15px; text-align: left; font-weight: 600; }
+        table td { padding: 15px; border-bottom: 1px solid #eee; }
+        tr:hover { background-color: var(--cor-padrao-hover); }
+
+        /* Etiquetas de Status */
+        .status { padding: 5px 10px; border-radius: 15px; font-size: 12px; font-weight: 600; display: inline-block; }
+        .status-Pendente { background: #fff3cd; color: #856404; }
+        .status-Enviado { background: #cce5ff; color: #004085; }
+        .status-Entregue { background: #d4edda; color: #155724; }
+        .status-Cancelado { background: #f8d7da; color: #721c24; }
+
+        .lista-itens { font-size: 13px; color: var(--cor-fonte-p); }
+
+        /* Footer */
+        footer { background-color: #5a371b; color: var(--cor-branco); text-align: center; padding: 30px 20px; margin-top: 50px; }
+        
+        /* Loading/Empty */
+        .msg-centro { text-align: center; padding: 40px; color: var(--cor-fonte-p); }
+
+        /* MODAL SENHA */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 999; align-items: center; justify-content: center; }
+        .modal-box { background: #fff; padding: 30px; border-radius: 10px; width: 100%; max-width: 400px; position: relative; }
+        .close-modal { position: absolute; top: 10px; right: 15px; font-size: 20px; cursor: pointer; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; font-size: 14px; }
+        .form-control { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; }
+        .btn-salvar { width: 100%; padding: 10px; background: var(--cor-btn); color: #fff; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        .btn-salvar:hover { background: #7a4f24; }
+
+        /* === RESPONSIVIDADE === */
+        @media (max-width: 768px) {
+            .header-area { flex-direction: column; gap: 15px; text-align: center; }
+            
+            /* Menu Mobile */
+            .menu-icon { display: block; } 
+            
+            #menu-mobile {
+                position: absolute;
+                top: 100%;
+                right: 0;
+                width: 100%;
+                background: radial-gradient(#fff6ed, #e8c39e);
+                box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+                max-height: 0;
+                overflow: hidden;
+                transition: max-height 0.5s ease-out;
+                z-index: 1000;
+            }
+
+            #menu-mobile.active {
+                max-height: 350px; 
+            }
+
+            .nav-links {
+                flex-direction: column;
+                width: 100%;
+                padding: 20px 0;
+                gap: 0;
+            }
+
+            .nav-links li { width: 100%; text-align: center; }
+
+            .nav-links a {
+                display: block;
+                padding: 15px;
+                border-bottom: 1px solid rgba(0,0,0,0.05);
+            }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="navbar">
+        <div class="logo">
+            <a href="home.html"><img src="assets/img/Logo fundo trans.png" alt="Loja Virtual Betel Canaã"></a>
+        </div>
+
+        <nav id="menu-mobile">
+            <ul class="nav-links">
+                <li><a href="home.html">Home</a></li>
+                <li><a href="produtos.html">Produtos</a></li>
+                <li><a href="carrinho.html">Carrinho</a></li>
+                <li id="login-item"><a href="login.html">Login</a></li>
+                <li><a href="painel-admin.html">Admin</a></li>
+            </ul>
+        </nav>
+
+        <div class="header-icons">
+            <a href="carrinho.html" class="carrinho-icon">
+                <img src="assets/img/sacola de compras.png" alt="Carrinho">
+            </a>
+            <ion-icon name="menu-outline" class="menu-icon" onclick="toggleMenu()"></ion-icon>
+        </div>
+    </div>
+</header>
+
+<section>
+    <div class="header-area">
+        <h2 class="page-title">Meus Pedidos</h2>
+        <button class="btn-senha" onclick="abrirModalSenha()">🔒 Alterar Senha</button>
+    </div>
+
+    <div id="area-pedidos" class="table-container">
+        <p class="msg-centro">Carregando...</p>
+    </div>
+</section>
+
+<div class="modal-overlay" id="modalSenha">
+    <div class="modal-box">
+        <span class="close-modal" onclick="fecharModalSenha()">&times;</span>
+        <h3 style="margin-bottom:20px;">Alterar Senha</h3>
+        <form onsubmit="alterarSenha(event)">
+            <div class="form-group">
+                <label>Senha Atual</label>
+                <input type="password" id="senha-atual" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label>Nova Senha</label>
+                <input type="password" id="senha-nova" class="form-control" required minlength="6">
+            </div>
+            <button type="submit" class="btn-salvar">Salvar Nova Senha</button>
+        </form>
+    </div>
+</div>
+
+<footer>
+    <p>&copy; 2025 Betel Canaã. Todos os direitos reservados.</p>
+</footer>
+
+<script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+
+<script>
+    const API_URL = '/api';
+    const token = localStorage.getItem("token");
+
+    if(!token){ alert("Faça login primeiro."); window.location.href = "login.html"; }
+
+    // === INICIALIZAÇÃO ===
+    document.addEventListener('DOMContentLoaded', () => {
+        atualizarInterfaceUsuario();
+        carregarPedidos();
+    });
+
+    // === FUNÇÃO MENU MOBILE ===
+    function toggleMenu() {
+        const nav = document.getElementById('menu-mobile');
+        nav.classList.toggle('active');
+    }
+
+    // === ATUALIZAR MENU DE USUÁRIO ===
+    function atualizarInterfaceUsuario() {
+        const loginItem = document.getElementById('login-item');
+        const menu = document.querySelector('.nav-links'); // Busca a lista UL
+        
+        if (token && loginItem) {
+             // Adiciona o botão "Minhas Compras" se não estiver na página
+             if (!document.getElementById('link-minhas-compras')) {
+                 // Nota: Como JÁ ESTAMOS na página de Minhas Compras, talvez não seja necessário o link,
+                 // mas mantemos para consistência com os outros menus
+                 /*
+                 const liCompras = document.createElement('li');
+                 liCompras.id = 'link-minhas-compras';
+                 liCompras.innerHTML = '<a href="meus-pedidos.html" style="color:var(--cor-btn)">Minhas Compras</a>';
+                 menu.insertBefore(liCompras, loginItem);
+                 */
+                 // Na própria página, apenas destacamos o link existente ou não adicionamos duplicado.
+                 // Se quiser adicionar: descomente as linhas acima.
+             }
+
+             // Muda Login para Sair
+             loginItem.innerHTML = '<a href="#" onclick="logout(event)">Sair</a>';
+        }
+    }
+
+    function logout(e) {
+        if(e) e.preventDefault();
+        localStorage.removeItem('token');
+        localStorage.removeItem('usuario_nome');
+        window.location.href = 'login.html'; 
+    }
+
+    // === CARREGAR PEDIDOS ===
+    function carregarPedidos() {
+        fetch(`${API_URL}/pedidos`, { headers: { "Authorization": "Bearer " + token } })
+        .then(r => {
+            if(r.status === 401) { localStorage.removeItem("token"); window.location.href="login.html"; }
+            return r.json();
+        })
+        .then(pedidos => {
+            const div = document.getElementById("area-pedidos");
+            if (pedidos.length === 0) {
+                div.innerHTML = "<p class='msg-centro'>Nenhum pedido encontrado. <a href='produtos.html' style='color:var(--cor-btn)'>Ir às compras</a></p>";
+                return;
+            }
+            
+            let html = `<table><thead><tr><th>ID</th><th>Data</th><th>Itens</th><th>Total</th><th>Status</th></tr></thead><tbody>`;
+            
+            pedidos.reverse().forEach(p => {
+                let itensStr = "";
+                try { 
+                    // Tenta parsear JSON ou usa direto se já for objeto
+                    const lista = typeof p.itens_json === 'string' ? JSON.parse(p.itens_json) : (p.itens || []);
+                    lista.forEach(i => itensStr += `<div>${i.quantidade}x ${i.nome}</div>`); 
+                } catch(e){ itensStr = "Ver detalhes"; }
+                
+                // Formatação de data
+                const dataObj = new Date(p.data || Date.now());
+                const dataFormatada = dataObj.toLocaleDateString('pt-BR') + ' ' + dataObj.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
+                const statusClass = p.status ? `status-${p.status}` : 'status-Pendente';
+                
+                html += `<tr>
+                    <td><strong>#${p.id}</strong></td>
+                    <td>${dataFormatada}</td>
+                    <td style="font-size:13px; color:#555">${itensStr}</td>
+                    <td style="font-weight:bold; color:var(--cor-btn)">R$ ${p.total.toFixed(2)}</td>
+                    <td><span class="status ${statusClass}">${p.status || 'Pendente'}</span></td>
+                </tr>`;
+            });
+            div.innerHTML = html + "</tbody></table>";
+        })
+        .catch(err => {
+            console.error(err);
+            document.getElementById("area-pedidos").innerHTML = "<p class='msg-centro'>Erro de conexão.</p>";
+        });
+    }
+
+    // === FUNÇÕES DE SENHA ===
+    function abrirModalSenha() { document.getElementById('modalSenha').style.display = 'flex'; }
+    function fecharModalSenha() { document.getElementById('modalSenha').style.display = 'none'; }
+
+    async function alterarSenha(e) {
+        e.preventDefault();
+        const atual = document.getElementById('senha-atual').value;
+        const nova = document.getElementById('senha-nova').value;
+
+        try {
+            const res = await fetch(`${API_URL}/auth/password`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                body: JSON.stringify({ senhaAtual: atual, novaSenha: nova })
+            });
+            
+            const data = await res.json();
+            
+            if (res.ok) {
+                alert("✅ " + data.message);
+                fecharModalSenha();
+                document.getElementById('senha-atual').value = '';
+                document.getElementById('senha-nova').value = '';
+            } else {
+                alert("❌ " + (data.error || "Erro ao alterar senha"));
+            }
+        } catch (error) {
+            alert("Erro de conexão");
+        }
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalhes do Produto - Betel Canaã</title>
+    <style>
+        /* === ESTILOS GERAIS === */
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+        :root {
+            --cor-padrao: #e8c39e; --cor-padrao-hover: #fff6ed; --cor-fonte: #000;
+            --cor-fonte-p: #555; --cor-btn: #9e6730; --cor-btn-hover: #7a4f24;
+            --cor-btn-fonte: #fff; --cor-branco: #ffffff; --cor-cinza: #f5f5f5;
+            --sombra: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body { 
+            font-family: 'Poppins', sans-serif; 
+            background-color: var(--cor-cinza); 
+            color: var(--cor-fonte); 
+            line-height: 1.6; 
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* === HEADER E NAVEGAÇÃO (PADRONIZADO) === */
+        header {
+            background: radial-gradient(#fff6ed, #e8c39e);
+            box-shadow: var(--sombra);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 5%;
+            max-width: 1400px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .logo { display: flex; align-items: center; line-height: 0; }
+        .logo img { width: 140px; height: auto; object-fit: contain; display: block; }
+
+        /* Menu Desktop */
+        #menu-mobile { flex: 1; text-align: right; }
+
+        .nav-links { display: flex; list-style: none; gap: 30px; justify-content: flex-end; align-items: center; }
+        .nav-links li { position: relative; }
+        
+        .nav-links a {
+            text-decoration: none;
+            color: var(--cor-fonte);
+            font-weight: 500;
+            padding: 8px 0;
+            transition: color 0.3s ease;
+        }
+        .nav-links a:hover { color: var(--cor-btn); }
+        .nav-links a::after {
+            content: ''; position: absolute; bottom: -5px; left: 0; width: 0; height: 2px;
+            background-color: var(--cor-btn); transition: width 0.3s ease;
+        }
+        .nav-links a:hover::after { width: 100%; }
+
+        /* Ícones do Header */
+        .header-icons {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-left: 20px;
+        }
+
+        .carrinho-icon img { width: 30px; height: 30px; cursor: pointer; }
+
+        /* Botão do Menu Mobile */
+        .menu-icon {
+            display: none; /* Oculto no Desktop */
+            font-size: 35px;
+            color: var(--cor-fonte);
+            cursor: pointer;
+        }
+
+        /* === DETALHES DO PRODUTO === */
+        .container-detalhes {
+            max-width: 1200px;
+            margin: 50px auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+            align-items: center;
+            flex: 1; /* Garante que o footer vá para baixo */
+        }
+
+        .img-wrapper {
+            background: #fff;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: var(--sombra);
+            text-align: center;
+        }
+        .img-wrapper img {
+            width: 100%;
+            max-width: 500px;
+            height: auto;
+            object-fit: contain;
+            border-radius: 10px;
+        }
+
+        .info-wrapper h1 { font-size: 2.5rem; margin-bottom: 10px; line-height: 1.2; }
+        .categoria { color: var(--cor-btn); font-weight: 600; text-transform: uppercase; letter-spacing: 1px; font-size: 0.9rem; }
+        .preco { font-size: 2rem; color: var(--cor-btn); font-weight: 700; margin: 20px 0; }
+        .estoque-aviso { font-size: 0.9rem; color: #dc3545; font-weight: 500; margin-bottom: 20px; }
+        .descricao { font-size: 1.1rem; color: var(--cor-fonte-p); margin-bottom: 30px; }
+
+        .btn-comprar {
+            background: var(--cor-btn);
+            color: #fff;
+            padding: 15px 40px;
+            border: none;
+            border-radius: 30px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            display: inline-block;
+        }
+        .btn-comprar:hover { background: var(--cor-btn-hover); transform: scale(1.05); }
+        .btn-desabilitado { background: #ccc; cursor: not-allowed; transform: none !important; }
+
+        /* Footer */
+        footer {
+            background-color: #5a371b;
+            color: var(--cor-branco);
+            text-align: center;
+            padding: 30px 20px;
+            margin-top: 50px;
+        }
+
+        /* === RESPONSIVIDADE === */
+        @media (max-width: 900px) { 
+            .container-detalhes { grid-template-columns: 1fr; gap: 30px; }
+            .info-wrapper h1 { font-size: 2rem; }
+        }
+
+        @media (max-width: 768px) { 
+            /* Menu Mobile */
+            .menu-icon { display: block; } 
+            
+            #menu-mobile {
+                position: absolute;
+                top: 100%;
+                right: 0;
+                width: 100%;
+                background: radial-gradient(#fff6ed, #e8c39e);
+                box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+                max-height: 0;
+                overflow: hidden;
+                transition: max-height 0.5s ease-out;
+                z-index: 1000;
+            }
+
+            #menu-mobile.active {
+                max-height: 350px; 
+            }
+
+            .nav-links {
+                flex-direction: column;
+                width: 100%;
+                padding: 20px 0;
+                gap: 0;
+            }
+
+            .nav-links li { width: 100%; text-align: center; }
+
+            .nav-links a {
+                display: block;
+                padding: 15px;
+                border-bottom: 1px solid rgba(0,0,0,0.05);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="navbar">
+            <div class="logo">
+                <a href="home.html"><img src="assets/img/Logo fundo trans.png" alt="Loja Virtual Betel Canaã"></a>
+            </div>
+
+            <nav id="menu-mobile">
+                <ul class="nav-links">
+                    <li><a href="home.html">Home</a></li>
+                    <li><a href="produtos.html">Produtos</a></li>
+                    <li><a href="carrinho.html">Carrinho</a></li>
+                    <li id="login-item"><a href="login.html">Login</a></li>
+                    <li><a href="painel-admin.html">Admin</a></li>
+                </ul>
+            </nav>
+
+            <div class="header-icons">
+                <a href="carrinho.html" class="carrinho-icon">
+                    <img src="assets/img/sacola de compras.png" alt="Carrinho">
+                </a>
+                <ion-icon name="menu-outline" class="menu-icon" onclick="toggleMenu()"></ion-icon>
+            </div>
+        </div>
+    </header>
+
+    <div class="container-detalhes" id="produto-area">
+        <p style="text-align:center; grid-column:1/-1;">Carregando detalhes...</p>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 Betel Canaã. Todos os direitos reservados.</p>
+    </footer>
+
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+
+    <script>
+        // Pega o ID da URL (ex: produto-detalhes.html?id=1)
+        const params = new URLSearchParams(window.location.search);
+        const produtoId = params.get('id');
+
+        // === INICIALIZAÇÃO ===
+        document.addEventListener('DOMContentLoaded', () => {
+            atualizarInterfaceUsuario();
+            carregarProduto();
+        });
+
+        // === FUNÇÃO MENU MOBILE ===
+        function toggleMenu() {
+            const nav = document.getElementById('menu-mobile');
+            nav.classList.toggle('active');
+        }
+
+        // === ATUALIZAR MENU DE USUÁRIO ===
+        function atualizarInterfaceUsuario() {
+            const token = localStorage.getItem('token');
+            const loginItem = document.getElementById('login-item');
+
+            if (token && loginItem) {
+                 // Muda Login para Sair
+                 loginItem.innerHTML = '<a href="#" onclick="logout(event)">Sair</a>';
+            }
+        }
+
+        function logout(e) {
+            if(e) e.preventDefault();
+            localStorage.removeItem('token');
+            localStorage.removeItem('usuario_nome');
+            window.location.href = 'login.html';
+        }
+
+        // === CARREGAR PRODUTO ===
+        async function carregarProduto() {
+            if(!produtoId) {
+                alert("Produto não especificado.");
+                window.location.href = "produtos.html";
+                return;
+            }
+
+            try {
+                const res = await fetch('/api/produtos');
+                const produtos = await res.json();
+                const produto = produtos.find(p => p.id == produtoId);
+
+                if(!produto) {
+                    document.getElementById('produto-area').innerHTML = "<h2>Produto não encontrado 😢</h2>";
+                    return;
+                }
+
+                const img = produto.imagem ? produto.imagem : 'assets/img/sem-foto.png';
+                const temEstoque = produto.estoque > 0;
+
+                const html = `
+                    <div class="img-wrapper">
+                        <img src="${img}" alt="${produto.nome}">
+                    </div>
+                    <div class="info-wrapper">
+                        <span class="categoria">${produto.categoria}</span>
+                        <h1>${produto.nome}</h1>
+                        <div class="preco">R$ ${produto.preco.toFixed(2)}</div>
+                        
+                        <p class="estoque-aviso">
+                            ${temEstoque ? `Estoque disponível: ${produto.estoque} unidades` : '❌ Produto Esgotado'}
+                        </p>
+
+                        <p class="descricao">${produto.descricao || 'Sem descrição detalhada.'}</p>
+
+                        <button 
+                            class="btn-comprar ${!temEstoque ? 'btn-desabilitado' : ''}" 
+                            onclick="adicionarAoCarrinho(${produto.id})"
+                            ${!temEstoque ? 'disabled' : ''}
+                        >
+                            ${temEstoque ? 'Adicionar ao Carrinho 🛒' : 'Indisponível'}
+                        </button>
+                    </div>
+                `;
+
+                document.getElementById('produto-area').innerHTML = html;
+                
+                // Guarda o objeto produto globalmente para usar no carrinho
+                window.produtoAtual = produto;
+
+            } catch(e) {
+                console.error(e);
+                document.getElementById('produto-area').innerHTML = "Erro ao carregar produto.";
+            }
+        }
+
+        function adicionarAoCarrinho(id) {
+            const produto = window.produtoAtual;
+            let carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
+            const itemExistente = carrinho.find(item => item.productId === id);
+
+            if (itemExistente) {
+                // Validação de Estoque no Frontend
+                if (itemExistente.quantidade + 1 > produto.estoque) {
+                    alert(`Desculpe! Só temos ${produto.estoque} unidades em estoque.`);
+                    return;
+                }
+                itemExistente.quantidade++;
+            } else {
+                carrinho.push({
+                    productId: produto.id,
+                    nome: produto.nome,
+                    preco: produto.preco,
+                    imagem: produto.imagem,
+                    categoria: produto.categoria,
+                    quantidade: 1
+                });
+            }
+
+            localStorage.setItem('carrinho', JSON.stringify(carrinho));
+            if(confirm("Produto adicionado! Ir para o carrinho?")) {
+                window.location.href = 'carrinho.html';
+            }
+        }
+    </script>
+</body>
+</html>

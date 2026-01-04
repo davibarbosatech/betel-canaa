@@ -1,0 +1,35 @@
+Exemplos rápidos (front-end) para integração:
+
+// Buscar produtos e renderizar
+fetch('/api/produtos')
+  .then(r => r.json())
+  .then(produtos => console.log(produtos));
+
+// Login
+fetch('/api/auth/login', {
+  method: 'POST',
+  headers: {'Content-Type':'application/json'},
+  body: JSON.stringify({email, senha})
+})
+.then(r => r.json())
+.then(data => {
+  if (data.token) localStorage.setItem('token', data.token);
+});
+
+// Enviar pedido (usando token)
+fetch('/api/pedidos', {
+  method: 'POST',
+  headers: {
+    'Content-Type':'application/json',
+    'Authorization': 'Bearer ' + localStorage.getItem('token')
+  },
+  body: JSON.stringify({itens: cartItems, total: total})
+});
+
+// Checar admin antes de acessar painel-admin.html
+const token = localStorage.getItem('token');
+fetch('/api/auth/me', {headers: {'Authorization':'Bearer ' + token}})
+  .then(r => r.json())
+  .then(user => {
+    if (!user.is_admin) window.location.href = 'login.html';
+  });

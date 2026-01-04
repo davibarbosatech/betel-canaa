@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Admin</title>
+
+    <!-- Mesmo estilo do seu projeto -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+        :root {
+            --cor-padrao: #e8c39e;
+            --cor-btn: #9e6730;
+            --cor-btn-hover: #7a4f24;
+            --cor-branco: #fff;
+            --cor-cinza: #f5f5f5;
+            --cor-fonte: #000;
+            --sombra: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Poppins, sans-serif;
+        }
+
+        body {
+            background: var(--cor-cinza);
+            color: var(--cor-fonte);
+        }
+
+        header {
+            background: radial-gradient(#fff6ed, #e8c39e);
+            box-shadow: var(--sombra);
+            padding: 15px 5%;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .logo img {
+            width: 140px;
+            object-fit: contain;
+        }
+
+        section {
+            max-width: 1400px;
+            margin: 40px auto;
+            background: var(--cor-branco);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: var(--sombra);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 25px;
+            font-size: 28px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+
+        h2::after {
+            content: "";
+            width: 80px;
+            height: 3px;
+            background: var(--cor-btn);
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 3px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        th, td {
+            padding: 14px;
+            text-align: left;
+            border-bottom: 2px solid #eee;
+        }
+
+        th {
+            background: var(--cor-padrao);
+            font-weight: 600;
+        }
+
+        .status {
+            padding: 6px 12px;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 14px;
+        }
+
+        .pendente { background: #d39e00; }
+        .enviado { background: #007bff; }
+        .concluido { background: #28a745; }
+
+        button {
+            padding: 8px 12px;
+            background: var(--cor-btn);
+            border: none;
+            color: var(--cor-branco);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: .3s;
+        }
+
+        button:hover {
+            background: var(--cor-btn-hover);
+        }
+
+        footer {
+            background-color: #5a371b;
+            color: white;
+            text-align: center;
+            margin-top: 40px;
+            padding: 25px;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <nav class="navbar">
+        <div class="logo">
+            <img src="assets/img/Logo fundo trans.png">
+        </div>
+        <ul class="nav-links">
+            <a href="painel-admin.html">Voltar ao painel</a>
+        </ul>
+    </nav>
+</header>
+
+<section>
+    <h2>Pedidos da Loja</h2>
+
+    <table id="tabela-pedidos">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Cliente</th>
+                <th>Total</th>
+                <th>Status</th>
+                <th>Itens</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- preenche dinamicamente -->
+        </tbody>
+    </table>
+</section>
+
+<footer>
+    <p>&copy; 2024 Betel Canaã. Todos os direitos reservados.</p>
+</footer>
+
+<script>
+// Validar token admin
+const token = localStorage.getItem("token");
+const isAdmin = localStorage.getItem("isAdmin");
+
+if (!token || isAdmin !== "true") {
+    alert("Acesso negado! Área exclusiva do administrador.");
+    window.location.href = "login.html";
+}
+
+// Carregar pedidos
+async function carregarPedidos() {
+    const res = await fetch("/api/pedidos", {
+        headers: {
+            "Authorization": "Bearer " + token
+        }
+    });
+
+    const pedidos = await res.json();
+    const tbody = document.querySelector("#tabela-pedidos tbody");
+    tbody.innerHTML = "";
+
+    pedidos.forEach(p => {
+        const linha = document.createElement("tr");
+
+        linha.innerHTML = `
+            <td>${p.id}</td>
+            <td>${p.usuario_nome || "Cliente"}</td>
+            <td>R$ ${p.total.toFixed(2)}</td>
+            <td><span class="status ${p.status}">${p.status}</span></td>
+            <td>${p.itens.map(i => i.nome + " (x" + i.quantidade + ")").join("<br>")}</td>
+            <td>
+                <button onclick="alterarStatus(${p.id})">Alterar Status</button>
+            </td>
+        `;
+
+        tbody.appendChild(linha);
+    });
+}
+
+// Alterar status do pedido
+async function alterarStatus(id) {
+    const res = await fetch(`/api/pedidos/${id}/status`, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + token
+        }
+    });
+
+    if (res.ok) {
+        alert("Status atualizado!");
+        carregarPedidos();
+    }
+}
+
+carregarPedidos();
+</script>
+
+</body>
+</html>

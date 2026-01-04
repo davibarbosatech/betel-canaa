@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carrinho - Betel Canaã</title>
+    <style>
+        /* === ESTILOS GERAIS === */
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+        :root {
+            --cor-padrao: #e8c39e; --cor-padrao-hover: #fff6ed; --cor-fonte: #000;
+            --cor-fonte-p: #555; --cor-btn: #9e6730; --cor-btn-hover: #7a4f24;
+            --cor-btn-fonte: #fff; --cor-branco: #ffffff; --cor-cinza: #f5f5f5;
+            --cor-cinza-escuro: #e0e0e0; --sombra: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body { 
+            font-family: 'Poppins', sans-serif; 
+            background-color: var(--cor-cinza); 
+            color: var(--cor-fonte); 
+            line-height: 1.6; 
+            min-height: 100vh; 
+            display: flex; 
+            flex-direction: column; 
+        }
+        
+        /* === HEADER === */
+        header {
+            background: radial-gradient(#fff6ed, #e8c39e);
+            box-shadow: var(--sombra);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 5%;
+            max-width: 1400px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .logo img { width: 140px; height: auto; object-fit: contain; display: block; }
+
+        #menu-mobile { flex: 1; text-align: right; }
+        .nav-links { display: flex; list-style: none; gap: 30px; justify-content: flex-end; align-items: center; }
+        .nav-links a { text-decoration: none; color: var(--cor-fonte); font-weight: 500; padding: 8px 0; transition: color 0.3s ease; }
+        .nav-links a:hover { color: var(--cor-btn); }
+        .nav-links a::after { content: ''; position: absolute; bottom: -5px; left: 0; width: 0; height: 2px; background-color: var(--cor-btn); transition: width 0.3s ease; }
+        .nav-links a:hover::after { width: 100%; }
+
+        .header-icons { display: flex; align-items: center; gap: 15px; margin-left: 20px; }
+        .carrinho-icon img { width: 30px; height: 30px; cursor: pointer; }
+        .menu-icon { display: none; font-size: 35px; color: var(--cor-fonte); cursor: pointer; }
+
+        /* === CARRINHO === */
+        .container { max-width: 1200px; margin: 40px auto; padding: 0 20px; width: 100%; flex: 1; }
+        .page-title { text-align: center; font-size: 32px; margin-bottom: 40px; color: var(--cor-fonte); position: relative; padding-bottom: 15px; }
+        .page-title::after { content: ''; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 80px; height: 3px; background-color: var(--cor-btn); }
+
+        .carrinho-container { display: grid; grid-template-columns: 2fr 1fr; gap: 30px; margin-bottom: 50px; }
+        
+        .carrinho-itens { background: var(--cor-branco); border-radius: 10px; padding: 25px; box-shadow: var(--sombra); }
+        .carrinho-header { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; padding: 15px 0; border-bottom: 2px solid var(--cor-cinza-escuro); font-weight: 600; color: var(--cor-fonte-p); }
+        .carrinho-item { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; align-items: center; padding: 20px 0; border-bottom: 1px solid var(--cor-cinza-escuro); }
+        .item-info { display: flex; align-items: center; gap: 15px; }
+        .item-imagem { width: 80px; height: 80px; object-fit: cover; border-radius: 8px; }
+        .item-detalhes h3 { font-size: 16px; margin-bottom: 5px; }
+        .quantidade-controller { display: flex; align-items: center; gap: 10px; }
+        .qtd-btn { width: 30px; height: 30px; border: 1px solid var(--cor-cinza-escuro); background: #fff; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .qtd-btn:hover { background: var(--cor-btn); color: #fff; }
+        .remover-item { background: none; border: none; color: #dc3545; cursor: pointer; font-size: 18px; }
+
+        .resumo-pedido { background: var(--cor-branco); border-radius: 10px; padding: 25px; box-shadow: var(--sombra); height: fit-content; position: sticky; top: 100px; }
+        .resumo-linha { display: flex; justify-content: space-between; margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 10px; }
+        .resumo-total { font-size: 20px; font-weight: 700; color: var(--cor-btn); margin: 20px 0; display: flex; justify-content: space-between; }
+        
+        .btn-finalizar { background: var(--cor-btn); color: #fff; border: none; padding: 15px 30px; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; width: 100%; transition: background 0.3s ease; }
+        .btn-finalizar:hover { background: var(--cor-btn-hover); }
+        .btn-continuar { display: block; text-align: center; margin-top: 15px; color: var(--cor-btn); text-decoration: none; font-weight: 500; }
+
+        .carrinho-vazio { text-align: center; padding: 40px; grid-column: 1 / -1; }
+
+        /* === MODAL === */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 999; align-items: center; justify-content: center; }
+        .modal-content { background: #fff; padding: 30px; border-radius: 15px; max-width: 450px; width: 90%; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.2); position: relative; }
+        .modal-close { position: absolute; top: 15px; right: 20px; font-size: 24px; cursor: pointer; color: #777; }
+        .pix-area { background: #f8f9fa; border: 1px dashed var(--cor-btn); padding: 20px; border-radius: 10px; margin: 20px 0; }
+        .pix-chave { font-size: 1.1rem; font-weight: bold; color: var(--cor-fonte); margin: 10px 0; word-break: break-all; }
+        .btn-copiar { background: #eee; border: none; padding: 5px 15px; border-radius: 20px; cursor: pointer; font-size: 0.9rem; }
+        .acoes-modal { display: flex; flex-direction: column; gap: 10px; }
+        .btn-confirmar-pagamento { background: #28a745; color: #fff; border: none; padding: 12px; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; width: 100%; transition: 0.3s; }
+        .btn-confirmar-pagamento:hover { background: #218838; }
+        .btn-cartao { background: #007bff; color: #fff; border: none; padding: 12px; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; width: 100%; transition: 0.3s; }
+        .btn-cartao:hover { background: #0069d9; }
+
+        footer { background-color: #5a371b; color: var(--cor-branco); text-align: center; padding: 30px 20px; margin-top: auto; }
+
+        @media (max-width: 900px) { .carrinho-container { grid-template-columns: 1fr; } }
+        @media (max-width: 768px) { 
+            .menu-icon { display: block; } 
+            #menu-mobile { position: absolute; top: 100%; right: 0; width: 100%; background: radial-gradient(#fff6ed, #e8c39e); box-shadow: 0 5px 15px rgba(0,0,0,0.1); max-height: 0; overflow: hidden; transition: max-height 0.5s ease-out; z-index: 1000; }
+            #menu-mobile.active { max-height: 350px; }
+            .nav-links { flex-direction: column; width: 100%; padding: 20px 0; gap: 0; }
+            .nav-links li { width: 100%; text-align: center; }
+            .nav-links a { display: block; padding: 15px; border-bottom: 1px solid rgba(0,0,0,0.05); }
+        }
+        @media (max-width: 600px) { .carrinho-header { display: none; } .carrinho-item { grid-template-columns: 1fr; text-align: center; gap: 15px; } .item-info { flex-direction: column; } .quantidade-controller { justify-content: center; } }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="navbar">
+            <div class="logo">
+                <a href="home.html"><img src="assets/img/Logo fundo trans.png" alt="Loja Virtual Betel Canaã"></a>
+            </div>
+            <nav id="menu-mobile">
+                <ul class="nav-links" id="menu-itens">
+                    <li><a href="home.html">Home</a></li>
+                    <li><a href="produtos.html">Produtos</a></li>
+                    <li><a href="carrinho.html">Carrinho</a></li>
+                    <li id="login-item"><a href="login.html">Login</a></li>
+                    <li><a href="painel-admin.html">Admin</a></li>
+                </ul>
+            </nav>
+            <div class="header-icons">
+                <a href="carrinho.html" class="carrinho-icon"><img src="assets/img/sacola de compras.png" alt="Carrinho"></a>
+                <ion-icon name="menu-outline" class="menu-icon" onclick="toggleMenu()"></ion-icon>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <h1 class="page-title">Meu Carrinho</h1>
+        <div class="carrinho-container" id="container-principal">
+            <div class="carrinho-itens" id="lista-itens"></div>
+            <div class="resumo-pedido">
+                <h3>Resumo do Pedido</h3>
+                <div class="resumo-linha"><span>Subtotal:</span><span id="subtotal">R$ 0,00</span></div>
+                <div class="resumo-total"><span>Total:</span><span id="total">R$ 0,00</span></div>
+                <button class="btn-finalizar" onclick="abrirModalPagamento()">Finalizar Compra</button>
+                <a href="produtos.html" class="btn-continuar">Continuar Comprando</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="modal-pagamento">
+        <div class="modal-content">
+            <span class="modal-close" onclick="fecharModal()">&times;</span>
+            <h2 style="color:var(--cor-btn); margin-bottom:10px;">Pagamento</h2>
+            <p>Escolha como deseja pagar:</p>
+            
+            <div class="pix-area">
+                <strong style="display:block; margin-bottom:10px;">Opção 1: PIX</strong>
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=00020126580014BR.GOV.BCB.PIX013694991600065520400005303986540510.005802BR5915BETEL_CANAA_LOJA6009SAO_PAULO62070503***6304E2CA" alt="QR Code PIX" style="max-width: 120px;">
+                <div class="pix-chave" id="chave-pix-texto">94991600065</div>
+                <button class="btn-copiar" onclick="copiarChave()">Copiar Chave</button>
+            </div>
+
+            <div class="acoes-modal">
+                <button class="btn-confirmar-pagamento" onclick="enviarPedido('PIX')">Já paguei no PIX ✅</button>
+                <button class="btn-cartao" onclick="enviarPedido('CARTAO')">Pagar com Cartão 💳 (Link WhatsApp)</button>
+            </div>
+        </div>
+    </div>
+
+    <footer><p>&copy; 2025 Betel Canaã. Todos os direitos reservados.</p></footer>
+
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+
+  <script>
+    let carrinho = [];
+    const API_URL = '/api'; // Base da API
+    
+    document.addEventListener('DOMContentLoaded', () => {
+        // Tenta ler do localStorage com segurança
+        try {
+            const saved = localStorage.getItem('carrinho');
+            carrinho = saved ? JSON.parse(saved) : [];
+            if (!Array.isArray(carrinho)) carrinho = [];
+        } catch (e) {
+            console.error("Erro ao ler carrinho", e);
+            carrinho = [];
+        }
+
+        atualizarInterfaceUsuario();
+        renderizarCarrinho();
+    });
+
+    // === FUNÇÕES DE UTILIDADE (MANTIDAS) ===
+    function toggleMenu() {
+        document.getElementById('menu-mobile').classList.toggle('active');
+    }
+
+    function atualizarInterfaceUsuario() {
+        const token = localStorage.getItem('token');
+        const loginItem = document.getElementById('login-item');
+        const menu = document.querySelector('.nav-links');
+
+        if (token) {
+            if (!document.getElementById('link-minhas-compras')) {
+                const liCompras = document.createElement('li');
+                liCompras.id = 'link-minhas-compras';
+                liCompras.innerHTML = '<a href="meus-pedidos.html">Minhas Compras</a>';
+                if(menu) menu.insertBefore(liCompras, loginItem);
+            }
+            if (loginItem) loginItem.innerHTML = '<a href="#" onclick="logout(event)">Sair</a>';
+        }
+    }
+
+    function logout(e) {
+        if(e) e.preventDefault();
+        localStorage.removeItem('token');
+        localStorage.removeItem('usuario_nome');
+        window.location.href = 'login.html'; 
+    }
+
+    function renderizarCarrinho() {
+        const container = document.getElementById('lista-itens');
+        const containerPrincipal = document.getElementById('container-principal');
+
+        if (carrinho.length === 0) {
+            containerPrincipal.innerHTML = `
+                <div class="carrinho-itens carrinho-vazio">
+                    <h3>Seu carrinho está vazio 🛒</h3>
+                    <p>Adicione produtos para prosseguir.</p>
+                    <a href="produtos.html" class="btn-finalizar" style="max-width:200px; margin: 20px auto; display:block;">Ver Produtos</a>
+                </div>
+            `;
+            return;
+        }
+
+        let html = `<div class="carrinho-header"><div>Produto</div><div>Qtd</div><div>Preço</div><div>Remover</div></div>`;
+        let totalGeral = 0;
+
+        carrinho.forEach((item, index) => {
+            const subtotalItem = item.preco * item.quantidade;
+            totalGeral += subtotalItem;
+            const img = item.imagem ? item.imagem : 'assets/img/sem-foto.png';
+
+            html += `
+                <div class="carrinho-item">
+                    <div class="item-info">
+                        <img src="${img}" class="item-imagem" onerror="this.src='https://via.placeholder.com/80'">
+                        <div class="item-detalhes">
+                            <h3>${item.nome}</h3>
+                            <small>${item.categoria || ''}</small>
+                        </div>
+                    </div>
+                    <div class="quantidade-controller">
+                        <button class="qtd-btn" onclick="alterarQtd(${index}, -1)">-</button>
+                        <span>${item.quantidade}</span>
+                        <button class="qtd-btn" onclick="alterarQtd(${index}, 1)">+</button>
+                    </div>
+                    <div style="font-weight:bold; color:var(--cor-btn)">R$ ${subtotalItem.toFixed(2)}</div>
+                    <div>
+                        <button class="remover-item" onclick="removerItem(${index})">🗑️</button>
+                    </div>
+                </div>
+            `;
+        });
+
+        container.innerHTML = html;
+        document.getElementById('subtotal').innerText = `R$ ${totalGeral.toFixed(2)}`;
+        document.getElementById('total').innerText = `R$ ${totalGeral.toFixed(2)}`;
+    }
+
+    function alterarQtd(index, mudanca) {
+        carrinho[index].quantidade = Math.max(1, carrinho[index].quantidade + mudanca);
+        salvarERenderizar();
+    }
+
+    function removerItem(index) {
+        if(confirm("Remover este item?")) {
+            carrinho.splice(index, 1);
+            salvarERenderizar();
+        }
+    }
+
+    function salvarERenderizar() {
+        localStorage.setItem('carrinho', JSON.stringify(carrinho));
+        renderizarCarrinho();
+    }
+
+    function abrirModalPagamento() {
+        const token = localStorage.getItem('token');
+        if (!token) { alert("Por favor, faça login para continuar."); window.location.href = 'login.html'; return; }
+        if (carrinho.length === 0) return alert("Carrinho vazio!");
+        document.getElementById('modal-pagamento').style.display = 'flex';
+    }
+
+    function fecharModal() { document.getElementById('modal-pagamento').style.display = 'none'; }
+
+    function copiarChave() {
+        const chave = document.getElementById('chave-pix-texto').innerText;
+        navigator.clipboard.writeText(chave).then(() => { alert("Copiado!"); });
+    }
+
+  // --- FUNÇÃO CORRIGIDA PARA MOBILE (URL DO WHATSAPP CONSERTADA) ---
+async function enviarPedido(metodo) {
+    const token = localStorage.getItem('token');
+    const telefoneLoja = '5594991600065';
+    const modal = document.getElementById('modal-pagamento');
+    
+    if (!token) { 
+        alert("Sua sessão expirou. Faça login novamente.");
+        window.location.href = 'login.html'; 
+        return;
+    }
+
+    const totalPedido = carrinho.reduce((acc, item) => acc + (item.preco * item.quantidade), 0);
+    
+    modal.style.pointerEvents = 'none';
+
+    try {
+        // 1. Pega dados do usuário
+        const resUser = await fetch('/api/auth/dados-usuario', { headers: { 'Authorization': `Bearer ${token}` } });
+        
+        if (!resUser.ok) {
+            const errorData = await resUser.json().catch(() => ({ error: "Erro desconhecido do servidor." }));
+            throw new Error("Falha ao buscar dados do usuário. " + (errorData.error || resUser.statusText));
+        }
+        
+        const user = await resUser.json();
+        
+        // 2. Envia para o servidor para registrar o pedido
+        const res = await fetch('/api/pedidos', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({
+                total: totalPedido,
+                itens: carrinho,
+                metodoPagamento: metodo === 'PIX' ? 'PIX' : 'CARTAO' 
+            })
+        });
+
+        const data = await res.json();
+        
+        if (!res.ok) {
+            throw new Error("Falha ao registrar pedido. " + (data.error || res.statusText));
+        }
+        
+        // --- TUDO OK, CONSTRÓI WHATSAPP ---
+
+        const itensParaMensagem = carrinho; 
+        const pedidoId = data.pedidoId;
+
+        // 3. Monta a mensagem do WhatsApp
+        let listaItensTexto = "";
+        itensParaMensagem.forEach(i => {
+            // Imprime o item e a quantidade
+            listaItensTexto += `▪️ ${i.quantidade}x ${i.nome}\n`; 
+            
+            // Adiciona a descrição/tamanho se o campo 'descricao' não estiver vazio
+            if (i.descricao) {
+                // Formata a descrição (ex: P, M, G) para aparecer logo abaixo do produto
+                listaItensTexto += `   Tamanho/Detalhe: ${i.descricao}\n`; 
+            }
+        });
+        
+        const endCompleto = user.endereco ? 
+            `${user.endereco}, ${user.numero || 'S/N'} - ${user.bairro}\n${user.cidade}/${user.estado} - ${user.cep}` : 
+            'Endereço não cadastrado';
+
+        let msg = "";
+
+        if (metodo === 'PIX') {
+            msg = `💸 *PAGAMENTO PIX CONFIRMADO*
+\n🆔 *Pedido:* #${pedidoId}
+👤 *Nome:* ${user.nome}
+🪪 *CPF:* ${user.cpf || 'Não Informado'}
+📞 *Telefone:* ${user.telefone || 'Não Informado'}
+
+📍 *Endereço:*
+${endCompleto}
+
+📦 *Itens:*
+${listaItensTexto}
+
+💰 *Total:* R$ ${totalPedido.toFixed(2)}
+
+O cliente afirmou que já pagou via PIX.`;
+
+        } else if (metodo === 'CARTAO') {
+            msg = `💳 *PAGAMENTO POR CARTÃO*
+\n🆔 *Pedido:* #${pedidoId}
+👤 *Nome:* ${user.nome}
+🪪 *CPF:* ${user.cpf || 'Não Informado'}
+📞 *Telefone:* ${user.telefone || 'Não Informado'}
+
+📍 *Endereço:*
+${endCompleto}
+
+📦 *Itens:*
+${listaItensTexto}
+
+💰 *Total:* R$ ${totalPedido.toFixed(2)}
+
+Cliente deseja link para pagamento no cartão.`;
+        }
+
+        // 4. Abre o WhatsApp no navegador atual (FORÇA O APP SWITCH)
+        // *** CORREÇÃO APLICADA AQUI ***
+        const linkZap = `https://wa.me/${telefoneLoja}?text=${encodeURIComponent(msg)}`;
+        
+        window.location.href = linkZap; 
+        
+        // 5. Limpa o carrinho
+        localStorage.removeItem('carrinho');
+        
+    } catch (error) {
+        console.error(error);
+        alert("🚨 Erro ao concluir pedido: " + error.message);
+        modal.style.pointerEvents = 'auto'; 
+        fecharModal();
+        renderizarCarrinho(); 
+    }
+}
+</script>
+</body>
+</html>

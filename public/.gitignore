@@ -1,0 +1,22 @@
+# Node
+node_modules/
+.env
+
+# Banco de dados
+*.sqlite
+*.sqlite3
+
+# Uploads dinâmicos
+uploads/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Arquivos compactados
+*.zip
+
+# OS
+.DS_Store
+Thumbs.db

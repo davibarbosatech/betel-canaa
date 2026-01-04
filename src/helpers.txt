@@ -1,0 +1,4 @@
+Exemplos de chamada úteis:
+- Verificar admin: GET /api/auth/me  (header Authorization: Bearer <token>)
+- Buscar produtos: GET /api/produtos
+- Criar produto (admin): POST /api/produtos {nome, descricao, preco, estoque}

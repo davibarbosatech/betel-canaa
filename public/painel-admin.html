@@ -1,0 +1,978 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Painel Admin - Betel Canaã</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
+        :root { 
+            --cor-padrao: #e8c39e; 
+            --cor-btn: #9e6730; 
+            --cor-btn-hover: #7d5126;
+            --cor-cinza: #f5f5f5; 
+            --cor-branco: #fff;
+            --cor-texto: #333;
+            --cor-texto-secundario: #666;
+            --cor-borda: #ddd;
+            --sombra: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+            font-family: 'Poppins', sans-serif; 
+        }
+        body { 
+            background: var(--cor-cinza); 
+            display: flex; 
+            height: 100vh; 
+            overflow: hidden; 
+            color: var(--cor-texto);
+        }
+        
+        /* Sidebar */
+        .sidebar { 
+            width: 250px; 
+            background: radial-gradient(#fff6ed, #e8c39e); 
+            display: flex; 
+            flex-direction: column; 
+            box-shadow: var(--sombra);
+            z-index: 10; 
+        }
+        .logo { 
+            padding: 20px; 
+            text-align: center; 
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+        }
+        .logo img { 
+            width: 120px; 
+            transition: transform 0.3s;
+        }
+        .logo img:hover {
+            transform: scale(1.05);
+        }
+        .nav-item { 
+            padding: 15px 20px; 
+            cursor: pointer; 
+            transition: all 0.3s; 
+            display: flex; 
+            align-items: center; 
+            gap: 10px;
+            color: var(--cor-texto);
+            border-left: 4px solid transparent;
+        }
+        .nav-item:hover { 
+            background: rgba(255,255,255,0.4); 
+            border-left: 4px solid var(--cor-btn);
+        }
+        .nav-item.active { 
+            background: rgba(255,255,255,0.6); 
+            border-left: 4px solid var(--cor-btn);
+            font-weight: 500;
+        }
+        
+        /* Main Content */
+        .main-content { 
+            flex: 1; 
+            padding: 20px; 
+            overflow-y: auto; 
+        }
+        .header { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--cor-borda);
+        }
+        .header h2 {
+            color: var(--cor-btn);
+        }
+        .btn-logout { 
+            background: var(--cor-btn); 
+            color: #fff; 
+            border: none; 
+            padding: 10px 20px; 
+            border-radius: 5px; 
+            cursor: pointer; 
+            transition: background 0.3s;
+            font-weight: 500;
+        }
+        .btn-logout:hover {
+            background: var(--cor-btn-hover);
+        }
+        
+        .section { 
+            display: none; 
+            animation: fadeIn 0.5s;
+        }
+        .section.active { 
+            display: block; 
+        }
+        @keyframes fadeIn { 
+            from { opacity: 0; transform: translateY(10px); } 
+            to { opacity: 1; transform: translateY(0); } 
+        }
+
+        .card-container { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); 
+            gap: 20px; 
+            margin-bottom: 30px; 
+        }
+        .card { 
+            background: #fff; 
+            padding: 25px; 
+            border-radius: 12px; 
+            box-shadow: var(--sombra); 
+            text-align: center; 
+            border-top: 4px solid var(--cor-btn);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+        }
+        .card h3 { 
+            font-size: 2.2rem; 
+            color: var(--cor-btn); 
+            margin: 15px 0; 
+            font-weight: 600;
+        }
+        .card p { 
+            color: var(--cor-texto-secundario); 
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+
+        /* Filtros e Exportação */
+        .filter-bar { 
+            background: #fff; 
+            padding: 20px; 
+            border-radius: 12px; 
+            display: flex; 
+            gap: 15px; 
+            align-items: flex-end; 
+            margin-bottom: 25px; 
+            flex-wrap: wrap; 
+            box-shadow: var(--sombra);
+        }
+        .filter-group { 
+            display: flex; 
+            flex-direction: column; 
+            flex: 1;
+            min-width: 150px;
+        }
+        .filter-group label { 
+            font-size: 0.85rem; 
+            color: var(--cor-texto-secundario); 
+            margin-bottom: 5px; 
+            font-weight: 500;
+        }
+        .filter-input { 
+            padding: 10px; 
+            border: 1px solid var(--cor-borda); 
+            border-radius: 6px; 
+            font-size: 0.95rem;
+            transition: border 0.3s;
+        }
+        .filter-input:focus {
+            outline: none;
+            border-color: var(--cor-btn);
+            box-shadow: 0 0 0 2px rgba(158, 103, 48, 0.1);
+        }
+        .btn-filter { 
+            background: var(--cor-btn); 
+            color: #fff; 
+            border: none; 
+            padding: 10px 25px; 
+            border-radius: 6px; 
+            cursor: pointer; 
+            height: 40px;
+            font-weight: 500;
+            transition: background 0.3s;
+            white-space: nowrap;
+        }
+        .btn-filter:hover {
+            background: var(--cor-btn-hover);
+        }
+        .btn-clean { 
+            background: #6c757d; 
+            color: #fff; 
+            border: none; 
+            padding: 10px 25px; 
+            border-radius: 6px; 
+            cursor: pointer; 
+            height: 40px;
+            font-weight: 500;
+            transition: background 0.3s;
+            white-space: nowrap;
+        }
+        .btn-clean:hover {
+            background: #5a6268;
+        }
+        .btn-export { 
+            background: #28a745; 
+            color: #fff; 
+            border: none; 
+            padding: 10px 25px; 
+            border-radius: 6px; 
+            cursor: pointer; 
+            height: 40px;
+            display: flex; 
+            align-items: center; 
+            gap: 8px;
+            font-weight: 500;
+            transition: background 0.3s;
+            white-space: nowrap;
+        }
+        .btn-export:hover { 
+            background: #218838; 
+        }
+
+        /* Tabelas */
+        .table-container {
+            background: #fff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--sombra);
+            margin-top: 20px;
+            overflow-x: auto;
+        }
+        table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            min-width: 900px;
+        }
+        thead {
+            background: linear-gradient(to right, #e8c39e, #f0d4b5);
+        }
+        th { 
+            padding: 15px; 
+            text-align: left; 
+            font-weight: 600;
+            color: var(--cor-texto);
+            border-bottom: 2px solid var(--cor-borda);
+        }
+        td { 
+            padding: 15px; 
+            text-align: left; 
+            border-bottom: 1px solid var(--cor-borda);
+            vertical-align: top;
+        }
+        tbody tr {
+            transition: background 0.3s;
+        }
+        tbody tr:hover {
+            background: rgba(232, 195, 158, 0.1);
+        }
+        
+        /* Formulários */
+        .form-add { 
+            background: #fff; 
+            padding: 25px; 
+            border-radius: 12px; 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 20px; 
+            margin-bottom: 30px;
+            box-shadow: var(--sombra);
+        }
+        .full-width { 
+            grid-column: 1 / -1; 
+        }
+        input, select, textarea { 
+            padding: 12px; 
+            border: 1px solid var(--cor-borda); 
+            border-radius: 6px; 
+            width: 100%; 
+            font-size: 0.95rem;
+            transition: border 0.3s;
+        }
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--cor-btn);
+            box-shadow: 0 0 0 2px rgba(158, 103, 48, 0.1);
+        }
+        
+        /* Status */
+        .status-select { 
+            padding: 8px 12px; 
+            border-radius: 6px; 
+            cursor: pointer; 
+            border: 1px solid var(--cor-borda);
+            font-weight: 500;
+            transition: all 0.3s;
+            width: 100%;
+        }
+        .status-select:focus {
+            outline: none;
+            border-color: var(--cor-btn);
+            box-shadow: 0 0 0 2px rgba(158, 103, 48, 0.1);
+        }
+        .Pendente { 
+            background: #fff3cd; 
+            color: #856404; 
+        } 
+        .Enviado { 
+            background: #cce5ff; 
+            color: #004085; 
+        } 
+        .Entregue { 
+            background: #d4edda; 
+            color: #155724; 
+        }
+        .Cancelado { 
+            background: #f8d7da; 
+            color: #721c24; 
+        }
+
+        /* Botões de ação */
+        .btn-action {
+            padding: 6px 12px;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        .btn-edit {
+            background: #ffc107;
+            color: #212529;
+        }
+        .btn-edit:hover {
+            background: #e0a800;
+        }
+        .btn-delete {
+            background: #dc3545;
+            color: white;
+        }
+        .btn-delete:hover {
+            background: #c82333;
+        }
+
+        /* Responsividade */
+        @media(max-width: 1024px) {
+            .filter-bar {
+                gap: 10px;
+            }
+            .filter-group {
+                min-width: 120px;
+            }
+        }
+        
+        @media(max-width: 768px) { 
+            .sidebar { 
+                width: 70px; 
+            } 
+            .nav-text, .logo img { 
+                display: none; 
+            }
+            .logo {
+                padding: 15px 5px;
+            }
+            .logo::after {
+                content: "BC";
+                font-size: 1.2rem;
+                font-weight: bold;
+                color: var(--cor-btn);
+            }
+            .form-add { 
+                grid-template-columns: 1fr; 
+            } 
+            .filter-bar { 
+                flex-direction: column; 
+                align-items: stretch; 
+            }
+            .btn-export, .btn-filter, .btn-clean {
+                width: 100%;
+            }
+            .table-container {
+                margin: 15px -20px;
+                border-radius: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <a href="home.html" style="text-decoration: none;">
+            <div class="logo">
+                <img src="assets/img/Logo fundo trans.png" alt="Logo Betel Canaã">
+            </div>
+        </a>
+        <div class="nav-item active" onclick="mudarAba('dashboard', this)">
+            🏠 <span class="nav-text">Dashboard</span>
+        </div>
+        <div class="nav-item" onclick="mudarAba('produtos', this)">
+            📦 <span class="nav-text">Produtos</span>
+        </div>
+        <div class="nav-item" onclick="mudarAba('relatorios', this)">
+            📊 <span class="nav-text">Relatórios</span>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="header">
+            <h2>Painel Administrativo</h2>
+            <button class="btn-logout" onclick="logout()">Sair</button>
+        </div>
+
+        <div id="dashboard" class="section active">
+            <div class="filter-bar">
+                <div class="filter-group">
+                    <label>De:</label>
+                    <input type="date" id="dash-inicio" class="filter-input">
+                </div>
+                <div class="filter-group">
+                    <label>Até:</label>
+                    <input type="date" id="dash-fim" class="filter-input">
+                </div>
+                <button class="btn-filter" onclick="filtrarDashboard()">
+                    Filtrar Faturamento
+                </button>
+                <button class="btn-clean" onclick="limparFiltroDash()">
+                    Limpar
+                </button>
+            </div>
+
+            <div class="card-container">
+                <div class="card">
+                    <p>Total de Produtos</p>
+                    <h3 id="dash-prods">0</h3>
+                </div>
+                <div class="card">
+                    <p>Vendas no Período</p>
+                    <h3 id="dash-vendas">0</h3>
+                </div>
+                <div class="card">
+                    <p>Faturamento no Período</p>
+                    <h3 id="dash-fatur">R$ 0,00</h3>
+                </div>
+            </div>
+        </div>
+
+        <div id="produtos" class="section">
+            <h3 style="margin-bottom: 20px;">Adicionar Produto</h3>
+            <form class="form-add" onsubmit="addProduto(event)">
+                <input id="pNome" placeholder="Nome do Produto" required>
+                <select id="pCat" required>
+                    <option value="">Selecione a Categoria</option>
+                    <option value="masculino">Masculino</option>
+                    <option value="feminino">Feminino</option>
+                    <option value="infantil">Infantil</option>
+                </select>
+                <input id="pPreco" type="number" step="0.01" placeholder="Preço (R$)" required>
+                <input id="pEstoque" type="number" placeholder="Estoque Inicial" required>
+                <input id="pFile" type="file" class="full-width" required accept="image/*">
+                <textarea id="pDesc" class="full-width" placeholder="Descrição do produto (opcional)" rows="3"></textarea>
+                <button type="submit" class="btn-logout full-width">
+                    Salvar Produto
+                </button>
+            </form>
+            
+            <h3 style="margin-bottom: 20px;">Lista de Produtos</h3>
+            <div class="table-container">
+                <table id="tab-produtos">
+                    <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th>Categoria</th>
+                            <th>Preço</th>
+                            <th>Estoque</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="relatorios" class="section">
+            <h3 style="margin-bottom: 20px;">Histórico de Pedidos</h3>
+            
+            <div class="filter-bar">
+                <div class="filter-group">
+                    <label>De:</label>
+                    <input type="date" id="rel-inicio" class="filter-input">
+                </div>
+                <div class="filter-group">
+                    <label>Até:</label>
+                    <input type="date" id="rel-fim" class="filter-input">
+                </div>
+                <div class="filter-group">
+                    <label>ID / Cliente</label>
+                    <input type="text" id="rel-busca" class="filter-input" placeholder="ID ou Nome do Cliente">
+                </div>
+                <div class="filter-group">
+                    <label>Status</label>
+                    <select id="rel-status" class="filter-input">
+                        <option value="">Todos os Status</option>
+                        <option value="Pendente">Pendente ⏳</option>
+                        <option value="Enviado">Enviado 🚚</option>
+                        <option value="Entregue">Entregue ✅</option>
+                        <option value="Cancelado">Cancelado ❌</option>
+                    </select>
+                </div>
+                
+                <button class="btn-filter" onclick="filtrarRelatorio()">
+                    Aplicar Filtros
+                </button>
+                <button class="btn-clean" onclick="limparFiltroRel()">
+                    Limpar
+                </button>
+                
+                <button class="btn-export" onclick="exportarCSV()">
+                    📄 Exportar CSV
+                </button>
+            </div>
+
+            <div class="table-container">
+                <table id="tab-pedidos">
+                    <thead>
+                        <tr>
+                            <th width="80">ID</th>
+                            <th width="120">Data / Hora</th>
+                            <th width="200">Cliente / Endereço</th>
+                            <th width="150">Nome do Produto</th>
+                            <th width="150">Descrição (Tamanho)</th>
+                            <th width="100">Total</th>
+                            <th width="140">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API = '/api';
+        const token = localStorage.getItem('token');
+        if(!token) window.location.href = 'login.html';
+
+        let todosPedidos = [];
+        let pedidosFiltrados = [];
+        let todosProdutos = [];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            verificarAdmin();
+            carregarDados();
+        });
+
+        async function verificarAdmin() {
+            try {
+                const res = await fetch(`${API}/auth/me`, {
+                    headers: {'Authorization': `Bearer ${token}`}
+                });
+                const user = await res.json();
+                if(!user.is_admin) {
+                    window.location.href = 'home.html';
+                }
+            } catch(e) {
+                window.location.href = 'login.html';
+            }
+        }
+
+        function mudarAba(id, el) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            el.classList.add('active');
+            
+            // Atualiza o título da página
+            const titulos = {
+                'dashboard': 'Dashboard',
+                'produtos': 'Produtos',
+                'relatorios': 'Relatórios'
+            };
+            document.querySelector('.header h2').textContent = `Painel Admin - ${titulos[id]}`;
+        }
+
+        async function carregarDados() {
+            try {
+                // Carregar produtos
+                const resProd = await fetch(`${API}/produtos`);
+                todosProdutos = await resProd.json();
+                document.getElementById('dash-prods').textContent = todosProdutos.length;
+                atualizarTabelaProdutos();
+                
+                // Carregar pedidos
+                const resPed = await fetch(`${API}/pedidos`, {
+                    headers: {'Authorization': `Bearer ${token}`}
+                });
+                todosPedidos = await resPed.json();
+                todosPedidos.sort((a, b) => new Date(b.data) - new Date(a.data));
+                
+                pedidosFiltrados = [...todosPedidos];
+                atualizarDashboard(todosPedidos);
+                atualizarTabelaPedidos();
+                
+            } catch(error) {
+                console.error('Erro ao carregar dados:', error);
+                alert('Erro ao carregar dados. Verifique sua conexão.');
+            }
+        }
+
+        function atualizarDashboard(lista) {
+            const totalVendas = lista.length;
+            const totalFaturamento = lista.reduce((acc, p) => acc + (p.total || 0), 0);
+            
+            document.getElementById('dash-vendas').textContent = totalVendas;
+            document.getElementById('dash-fatur').textContent = 
+                `R$ ${totalFaturamento.toFixed(2).replace('.', ',')}`;
+        }
+
+        function filtrarDashboard() {
+            const inicio = document.getElementById('dash-inicio').value;
+            const fim = document.getElementById('dash-fim').value;
+            
+            if(!inicio || !fim) {
+                alert("Por favor, selecione a data inicial e final.");
+                return;
+            }
+            
+            const dInicio = new Date(inicio + 'T00:00:00');
+            const dFim = new Date(fim + 'T23:59:59');
+            
+            if(dInicio > dFim) {
+                alert("A data inicial não pode ser maior que a data final.");
+                return;
+            }
+
+            const filtrados = todosPedidos.filter(p => {
+                const dataP = new Date(p.data);
+                return dataP >= dInicio && dataP <= dFim;
+            });
+            
+            atualizarDashboard(filtrados);
+        }
+
+        function limparFiltroDash() {
+            document.getElementById('dash-inicio').value = '';
+            document.getElementById('dash-fim').value = '';
+            atualizarDashboard(todosPedidos);
+        }
+
+        function atualizarTabelaProdutos() {
+            const tbody = document.querySelector('#tab-produtos tbody');
+            tbody.innerHTML = todosProdutos.map(p => `
+                <tr>
+                    <td>
+                        <strong>${p.nome}</strong>
+                        ${p.descricao ? `<br><small style="color:#666">${p.descricao}</small>` : ''}
+                    </td>
+                    <td>
+                        <span style="
+                            background: ${p.categoria === 'masculino' ? '#d4edda' : 
+                                       p.categoria === 'feminino' ? '#f8d7da' : '#cce5ff'};
+                            color: ${p.categoria === 'masculino' ? '#155724' : 
+                                   p.categoria === 'feminino' ? '#721c24' : '#004085'};
+                            padding: 4px 8px;
+                            border-radius: 4px;
+                            font-size: 0.85rem;
+                        ">
+                            ${p.categoria}
+                        </span>
+                    </td>
+                    <td style="font-weight: bold; color: var(--cor-btn)">
+                        R$ ${p.preco.toFixed(2).replace('.', ',')}
+                    </td>
+                    <td>
+                        <span style="
+                            background: ${p.estoque > 10 ? '#d4edda' : 
+                                       p.estoque > 0 ? '#fff3cd' : '#f8d7da'};
+                            color: ${p.estoque > 10 ? '#155724' : 
+                                   p.estoque > 0 ? '#856404' : '#721c24'};
+                            padding: 4px 8px;
+                            border-radius: 4px;
+                            font-weight: 500;
+                        ">
+                            ${p.estoque} unidades
+                        </span>
+                    </td>
+                    <td>
+                        <button onclick="delProd(${p.id})" class="btn-action btn-delete">
+                            Excluir
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function atualizarTabelaPedidos() {
+            const tbody = document.querySelector('#tab-pedidos tbody');
+            
+            if(pedidosFiltrados.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7" style="text-align: center; padding: 40px; color: #666;">
+                            📭 Nenhum pedido encontrado com os filtros atuais.
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            tbody.innerHTML = pedidosFiltrados.map(p => {
+                const dataObj = new Date(p.data);
+                const dataStr = dataObj.toLocaleDateString('pt-BR');
+                const horaStr = dataObj.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
+                
+                const end = p.endereco_completo || 'Endereço não informado';
+                const tel = p.usuario_telefone || '';
+                const nomeCliente = p.usuario_nome || 'Cliente não identificado';
+                
+                // Processar itens do pedido
+                const itens = p.itens || [];
+                const nomesProdutos = itens.map(item => 
+                    `<div style="margin-bottom: 4px;">${item.quantidade}x ${item.nome || 'Produto'}</div>`
+                ).join('');
+                
+                const descricoesProdutos = itens.map(item => 
+                    `<div style="margin-bottom: 4px; color: #666;">${item.tamanho || item.descricao || 'N/A'}</div>`
+                ).join('');
+
+                return `
+                <tr>
+                    <td>
+                        <strong>#${p.id}</strong>
+                    </td>
+                    <td>
+                        <div style="font-weight:500">${dataStr}</div>
+                        <div style="font-size:0.85rem; color:#666">${horaStr}</div>
+                    </td>
+                    <td>
+                        <div style="font-weight:500; margin-bottom: 4px;">${nomeCliente}</div>
+                        ${tel ? `<div style="font-size:0.85rem; margin-bottom: 4px;">📞 ${tel}</div>` : ''}
+                        <div style="font-size:0.85rem; color:#666; line-height: 1.3;">
+                            📍 ${end}
+                        </div>
+                    </td>
+                    <td>
+                        ${nomesProdutos || 'Nenhum produto'}
+                    </td>
+                    <td>
+                        ${descricoesProdutos || 'N/A'}
+                    </td>
+                    <td style="font-weight: bold; color: var(--cor-btn)">
+                        R$ ${(p.total || 0).toFixed(2).replace('.', ',')}
+                    </td>
+                    <td>
+                        <select class="status-select ${p.status || 'Pendente'}" 
+                                onchange="mudarStatus(${p.id}, this.value)"
+                                style="font-size: 0.9rem;">
+                            <option value="Pendente" ${p.status=='Pendente'?'selected':''}>Pendente ⏳</option>
+                            <option value="Enviado" ${p.status=='Enviado'?'selected':''}>Enviado 🚚</option>
+                            <option value="Entregue" ${p.status=='Entregue'?'selected':''}>Entregue ✅</option>
+                            <option value="Cancelado" ${p.status=='Cancelado'?'selected':''}>Cancelado ❌</option>
+                        </select>
+                    </td>
+                </tr>`;
+            }).join('');
+        }
+
+        function filtrarRelatorio() {
+            const inicio = document.getElementById('rel-inicio').value;
+            const fim = document.getElementById('rel-fim').value;
+            const busca = document.getElementById('rel-busca').value.toLowerCase().trim();
+            const statusFiltro = document.getElementById('rel-status').value;
+
+            let filtrados = todosPedidos;
+
+            // Filtro de datas
+            if (inicio && fim) {
+                const dInicio = new Date(inicio + 'T00:00:00');
+                const dFim = new Date(fim + 'T23:59:59');
+                
+                if(dInicio > dFim) {
+                    alert("A data inicial não pode ser maior que a data final.");
+                    return;
+                }
+                
+                filtrados = filtrados.filter(p => {
+                    const dataP = new Date(p.data);
+                    return dataP >= dInicio && dataP <= dFim;
+                });
+            } else if (inicio || fim) {
+                alert("Para filtrar por período, selecione a data inicial e final.");
+                return;
+            }
+
+            // Filtro de busca (ID ou Cliente)
+            if (busca) {
+                filtrados = filtrados.filter(p => {
+                    const buscaId = busca.startsWith('#') ? busca.substring(1) : busca;
+                    const idMatch = p.id.toString().includes(buscaId);
+                    const nomeMatch = (p.usuario_nome || '').toLowerCase().includes(busca);
+                    
+                    return idMatch || nomeMatch;
+                });
+            }
+            
+            // Filtro de status
+            if (statusFiltro) {
+                filtrados = filtrados.filter(p => {
+                    return (p.status || 'Pendente') === statusFiltro;
+                });
+            }
+
+            pedidosFiltrados = filtrados;
+            atualizarTabelaPedidos();
+        }
+
+        function limparFiltroRel() {
+            document.getElementById('rel-inicio').value = '';
+            document.getElementById('rel-fim').value = '';
+            document.getElementById('rel-busca').value = '';
+            document.getElementById('rel-status').value = '';
+            
+            pedidosFiltrados = [...todosPedidos];
+            atualizarTabelaPedidos();
+        }
+
+        function exportarCSV() {
+            if (pedidosFiltrados.length === 0) {
+                alert("Não há dados para exportar.");
+                return;
+            }
+
+            let csv = "ID Pedido,Data,Hora,Cliente,Telefone,Endereço,Produto,Tamanho/Descrição,Quantidade,Total Item,Total Pedido,Status\n";
+
+            pedidosFiltrados.forEach(p => {
+                const d = new Date(p.data);
+                const dataStr = d.toLocaleDateString('pt-BR');
+                const horaStr = d.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
+                const nomeCliente = (p.usuario_nome || "").replace(/"/g, '""');
+                const tel = p.usuario_telefone || "";
+                const end = (p.endereco_completo || "").replace(/"/g, '""');
+                const totalPedido = (p.total || 0).toFixed(2).replace('.', ',');
+                const status = p.status || 'Pendente';
+
+                const itens = p.itens || [];
+                if(itens.length > 0) {
+                    itens.forEach(item => {
+                        const nomeProd = (item.nome || "").replace(/"/g, '""');
+                        const descProd = (item.tamanho || item.descricao || "N/A").replace(/"/g, '""');
+                        const quantidade = item.quantidade || 1;
+                        const totalItem = ((item.preco || 0) * quantidade).toFixed(2).replace('.', ',');
+                        
+                        csv += `"${p.id}","${dataStr}","${horaStr}","${nomeCliente}","${tel}","${end}","${nomeProd}","${descProd}","${quantidade}","${totalItem}","${totalPedido}","${status}"\n`;
+                    });
+                } else {
+                    csv += `"${p.id}","${dataStr}","${horaStr}","${nomeCliente}","${tel}","${end}","Sem produtos","N/A","0","0,00","${totalPedido}","${status}"\n`;
+                }
+            });
+
+            const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.href = url;
+            link.download = `relatorio_pedidos_${new Date().toISOString().slice(0,10)}.csv`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+        }
+
+        async function addProduto(e) {
+            e.preventDefault();
+            
+            const formData = new FormData();
+            formData.append('nome', document.getElementById('pNome').value);
+            formData.append('categoria', document.getElementById('pCat').value);
+            formData.append('preco', parseFloat(document.getElementById('pPreco').value));
+            formData.append('estoque', parseInt(document.getElementById('pEstoque').value));
+            formData.append('descricao', document.getElementById('pDesc').value);
+            
+            const fileInput = document.getElementById('pFile');
+            if(fileInput.files[0]) {
+                formData.append('imagem', fileInput.files[0]);
+            }
+
+            try {
+                const res = await fetch(`${API}/produtos`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: formData
+                });
+                
+                if(res.ok) {
+                    alert("✅ Produto cadastrado com sucesso!");
+                    e.target.reset();
+                    await carregarDados();
+                } else {
+                    const error = await res.json();
+                    alert(`❌ Erro ao salvar: ${error.message || 'Tente novamente.'}`);
+                }
+            } catch(error) {
+                console.error('Erro:', error);
+                alert('❌ Erro de conexão. Verifique sua internet.');
+            }
+        }
+
+        async function mudarStatus(id, novoStatus) {
+            try {
+                const res = await fetch(`${API}/pedidos/${id}/status`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({status: novoStatus})
+                });
+                
+                if(res.ok) {
+                    // Atualiza o status localmente
+                    const pedido = todosPedidos.find(p => p.id === id);
+                    if(pedido) pedido.status = novoStatus;
+                    
+                    if(pedidosFiltrados.find(p => p.id === id)) {
+                        atualizarTabelaPedidos();
+                    }
+                } else {
+                    alert("Erro ao atualizar status.");
+                }
+            } catch(error) {
+                console.error('Erro:', error);
+                alert('Erro ao atualizar status.');
+            }
+        }
+
+        async function delProd(id) {
+            if(!confirm("Tem certeza que deseja excluir este produto?\nEsta ação não pode ser desfeita.")) {
+                return;
+            }
+
+            try {
+                const res = await fetch(`${API}/produtos/${id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                if(res.ok) {
+                    alert("✅ Produto excluído com sucesso!");
+                    await carregarDados();
+                } else {
+                    alert("❌ Erro ao excluir produto.");
+                }
+            } catch(error) {
+                console.error('Erro:', error);
+                alert('❌ Erro de conexão.');
+            }
+        }
+
+        function logout() {
+            if(confirm("Deseja realmente sair do painel administrativo?")) {
+                localStorage.removeItem('token');
+                window.location.href = 'login.html';
+            }
+        }
+    </script>
+</body>
+</html>

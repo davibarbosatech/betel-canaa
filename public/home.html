@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="pt-br">    
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loja Virtual Betel Canaã</title>
+    <style>
+        /* === ESTILOS GERAIS === */
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+        * { margin: 0; padding: 0; box-sizing: border-box; }  
+        :root {
+            --cor-padrao: #e8c39e; --cor-padrao-hover: #fff6ed; --cor-fonte: #000;
+            --cor-fonte-p: #555; --cor-btn: #9e6730; --cor-btn-hover: #7a4f24;
+            --cor-btn-fonte: #fff; --cor-fonte-corpo: #555; --cor-fonte-leve: #e8c39e; 
+            --cor-branco: #ffffff; --cor-cinza: #f5f5f5;
+            --sombra: 0 4px 6px rgba(0, 0, 0, 0.1); --sombra-hover: 0 8px 15px rgba(0, 0, 0, 0.15);
+        }
+        body { font-family: 'Poppins', sans-serif; line-height: 1.6; background-color: var(--cor-cinza); }
+
+        /* HEADER */
+        header { background: radial-gradient(#fff6ed, #e8c39e); box-shadow: var(--sombra); position: sticky; top: 0; z-index: 100; }
+        .navbar { display: flex; justify-content: space-between; align-items: center; padding: 15px 5%; max-width: 1400px; margin: 0 auto; position: relative; }
+        .logo img { width: 140px; height: auto; object-fit: contain; display: block; }
+        #menu-mobile { flex: 1; text-align: right; }
+        .nav-links { display: flex; list-style: none; gap: 30px; justify-content: flex-end; align-items: center; }
+        .nav-links a { text-decoration: none; color: var(--cor-fonte); font-weight: 500; padding: 8px 0; transition: color 0.3s ease; }
+        .nav-links a:hover { color: var(--cor-btn); }
+        .header-icons { display: flex; align-items: center; gap: 15px; margin-left: 20px; }
+        .carrinho-icon img { width: 30px; height: 30px; cursor: pointer; }
+        .menu-icon { display: none; font-size: 35px; color: var(--cor-fonte); cursor: pointer; }
+
+    
+        /* BANNER */
+.banner {
+    display: flex;
+    justify-content: space-between;
+    align-items: stretch;
+
+    padding: 60px 80px 0; /* sem espaço embaixo */
+    height: auto;
+
+    background: linear-gradient(180deg, #f7e2c8, #f2d1ac);
+    overflow: hidden;
+}
+
+.banner-imagem {
+    display: flex;
+    align-items: flex-end;
+    height: 100%;
+}
+
+.banner-imagem img {
+    display: block;
+    height: 100%;
+    max-height: 100%;
+    width: auto;
+    object-fit: contain;
+
+    margin: 0;
+    padding: 0;
+    line-height: 0;
+}
+
+
+
+.banner .container {
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 0 25px;
+}
+
+.banner .linha {
+    display: flex;              /* 🔥 ESSENCIAL */
+    align-items: center;        /* centraliza verticalmente */
+    justify-content: space-between;
+    min-height: 360px;          /* altura real e controlada */
+    gap: 40px;
+}
+
+.banner .col-2 {
+    flex: 1;
+}
+
+.banner .col-2:first-child {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.banner .col-2:last-child {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.banner .col-2:last-child img {
+    max-width: 320px;           /* 🔥 imagem menor */
+    width: 100%;
+    height: auto;
+}
+
+/* TÍTULOS DAS CATEGORIAS */
+.categorias h3,
+.categorias a {
+    display: inline-block;
+    margin-top: 18px;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #000;
+    text-decoration: none;
+    position: relative;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+/* Linha animada */
+.categorias h3::after,
+.categorias a::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: -6px;
+    width: 0;
+    height: 2px;
+    background-color: var(--cor-padrao);
+    transition: all 0.3s ease;
+    transform: translateX(-50%);
+}
+
+/* Hover elegante */
+.categorias h3:hover,
+.categorias a:hover {
+    color: var(--cor-padrao);
+}
+
+.categorias h3:hover::after,
+.categorias a:hover::after {
+    width: 70%;
+}
+
+/* BOTÃO "GARANTA JÁ O SEU" */
+.btn-garanta,
+.banner .btn,
+.banner a.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 14px 32px;
+    margin-top: 20px;
+
+    background: linear-gradient(135deg, #5a3b1f, #3a240f);
+    color: #fff !important;
+
+    font-size: 1rem;
+    font-weight: 600;
+    text-decoration: none;
+
+    border-radius: 30px;
+    cursor: pointer;
+
+    transition: all 0.3s ease;
+}
+
+/* Hover elegante */
+.btn-garanta:hover,
+.banner .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+    opacity: 0.95;
+}
+
+
+
+     /* =========================
+   CATEGORIAS
+========================= */
+
+.categorias {
+    margin: 70px 0;
+}
+
+.corpo-categorias {
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 0 25px;
+}
+
+/* =========================
+   TÍTULO DA SEÇÃO
+========================= */
+
+.categorias h2 {
+    text-align: center;
+    margin: 40px auto;
+    font-size: 2rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: var(--cor-fonte);
+    position: relative;
+    padding-bottom: 15px;
+}
+
+.categorias h2::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 3px;
+    background-color: var(--cor-btn);
+    border-radius: 2px;
+}
+
+/* =========================
+   GRID DE CATEGORIAS
+========================= */
+
+.categorias .linha {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+    flex-wrap: wrap;
+}
+
+/* =========================
+   CARD DE CATEGORIA
+========================= */
+
+.col-3 {
+    flex: 0 0 calc(33.333% - 30px);
+    max-width: 300px;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+/* =========================
+   BLINDAGEM DO LINK
+========================= */
+
+.categorias a,
+.categorias a:hover,
+.categorias a:focus,
+.categorias a:active {
+    text-decoration: none !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+/* Remove qualquer pseudo-elemento herdado do <a> */
+.categorias a::before,
+.categorias a::after {
+    content: none !important;
+}
+
+/* =========================
+   TEXTO DA CATEGORIA
+========================= */
+
+.col-3 span {
+    display: inline-block;
+    margin-top: 15px;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--cor-fonte);
+    position: relative;
+}
+
+/* Linha animada — começa invisível */
+.col-3 span::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: -6px;
+    width: 0;
+    height: 2px;
+    background-color: var(--cor-btn);
+    transform: translateX(-50%);
+    transition: width 0.3s ease;
+}
+
+/* Só aparece no hover do card */
+.col-3:hover span::after {
+    width: 60%;
+}
+
+/* =========================
+   IMAGEM DA CATEGORIA
+========================= */
+
+.col-3 .categoria-imagem-container {
+    width: 100%;
+    height: 400px;
+    background-color: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: var(--sombra);
+}
+
+.col-3 .categoria-imagem-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    transition: transform 0.5s ease;
+}
+
+/* Zoom suave na imagem */
+.col-3:hover .categoria-imagem-container img {
+    transform: scale(1.15);
+}
+
+/* =========================
+   TEXTO DA CATEGORIA
+========================= */
+
+.col-3 span {
+    display: inline-block;
+    margin-top: 15px;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--cor-fonte);
+    position: relative;
+    transition: color 0.3s ease;
+}
+
+/* Underline animado (somente no texto) */
+.col-3 span::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: -5px;
+    width: 0;
+    height: 2px;
+    background-color: var(--cor-btn);
+    transform: translateX(-50%);
+    transition: width 0.3s ease;
+}
+
+/* Hover elegante */
+.col-3:hover span::after {
+    width: 60%;
+}
+
+/* BOTÃO CHAMADA PARA AÇÃO */
+
+.btn-cta {
+  display: inline-block;
+  background-color: #4b2e16; /* mesma cor do footer */
+  color: #ffffff;
+  padding: 14px 28px;
+  border-radius: 999px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+ 
+.btn-cta:hover {
+  background-color: #ffffff;
+  color: #4b2e16;
+}
+
+@media (max-width: 768px) {
+  .btn-cta {
+    display: block;
+    margin: 24px auto 0 auto;
+    text-align: center;
+  }
+}
+
+.banner .btn {
+    background: #5a371b; /* mesma cor do footer */
+    color: #fff;
+}
+
+.banner .btn:hover {
+    background: #ffffff;
+    color: #5a371b;
+}
+
+.banner .btn:hover {
+    background: #ffffff;
+    color: #5a371b !important;
+    border: 2px solid #5a371b;
+}
+
+
+
+        /* DESTAQUES */
+        .produtos-destaque { max-width: 1300px; margin: 70px auto; padding: 0 25px; }
+        .produtos-destaque h2 { text-align: center; margin: 40px auto; font-size: 2rem; color: var(--cor-fonte); font-weight: 600; text-transform: uppercase; position: relative; padding-bottom: 15px; }
+        .produtos-destaque h2::after { content: ''; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 80px; height: 3px; background-color: var(--cor-btn); border-radius: 2px; }
+        
+        .produtos-grid-home { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; margin-bottom: 50px; }
+        .produto-card-home { background-color: #ffffff; border-radius: 15px; overflow: hidden; box-shadow: var(--sombra); transition: all 0.3s ease; display: flex; flex-direction: column; width: 100%; }
+        .produto-card-home:hover { transform: translateY(-5px); box-shadow: var(--sombra-hover); }
+        .produto-imagem-container { width: 100%; height: 400px; overflow: hidden; display: block; background-color: #f4f4f4; }
+        .produto-imagem-home { width: 100%; height: 100%; object-fit: cover; object-position: top center; transition: transform 0.6s ease; }
+        .produto-card-home:hover .produto-imagem-home { transform: scale(1.15); }
+        .produto-info-home { padding: 25px; flex-grow: 1; display: flex; flex-direction: column; text-align: center; }
+        .produto-categoria-home { color: var(--cor-padrao); font-size: 0.9rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 10px; }
+        .produto-nome-home { font-size: 1.5rem; font-weight: 600; margin-bottom: 10px; color: var(--cor-fonte); line-height: 1.3; }
+        .produto-preco-home { font-size: 1.8rem; font-weight: 700; color: var(--cor-btn); margin-bottom: 20px; }
+        .btn-adicionar-home { background-color: var(--cor-btn); color: #fff; border: none; padding: 15px 30px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; display: inline-block; width: 80%; margin: 0 auto; font-size: 1.1rem; }
+        .btn-adicionar-home:hover { background-color: var(--cor-btn-hover); transform: scale(1.02); }
+
+        /* FOOTER */
+        footer { background-color: #5a371b; color: #fff; padding: 50px 0 20px; margin-top: 50px; }
+        .footer-container { max-width: 1300px; margin: 0 auto; padding: 0 25px; }
+        .footer-linha { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px; margin-bottom: 30px; }
+        .footer-col h3 { font-size: 1.2rem; color: #fff; margin-bottom: 20px; font-weight: 600; position: relative; }
+        .footer-col h3::after { content: ''; position: absolute; left: 0; bottom: -8px; background: var(--cor-padrao); height: 2px; width: 50px; }
+        .footer-col ul { list-style: none; }
+        .footer-col ul li { margin-bottom: 10px; }
+        .footer-col ul li a { font-size: 1rem; color: #ddd; text-decoration: none; transition: all 0.3s ease; }
+        .social-links { display: flex; gap: 15px; }
+        .social-links a { display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; background-color: rgba(255,255,255,0.2); border-radius: 50%; color: #fff; transition: all 0.5s ease; text-decoration: none; }
+        .copyright { text-align: center; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); margin-top: 20px; font-size: 0.9rem; color: #fff; }
+        .loading-home { text-align: center; width: 100%; grid-column: 1 / -1; padding: 20px; font-size: 1.1rem; color: var(--cor-fonte-p); }
+
+        /* RESPONSIVIDADE */
+        @media (max-width: 1024px) {
+            .col-2 h1 { font-size: 2.2rem; }
+            .col-2:first-child { transform: translateY(-60px); }
+            .linha .col-2:last-child { transform: translateY(30px); }
+            .produtos-grid-home { gap: 20px; }
+            .produto-imagem-container { height: 400px; }
+        }
+        @media (max-width: 900px) {
+            .produtos-grid-home { grid-template-columns: repeat(2, 1fr); gap: 20px; }
+        }
+        @media (max-width: 768px) {
+            .menu-icon { display: block; } 
+            #menu-mobile { position: absolute; top: 100%; right: 0; width: 100%; background: radial-gradient(#fff6ed, #e8c39e); box-shadow: 0 5px 15px rgba(0,0,0,0.1); max-height: 0; overflow: hidden; transition: max-height 0.5s ease-out; z-index: 1000; }
+            #menu-mobile.active { max-height: 350px; }
+            .nav-links { flex-direction: column; width: 100%; padding: 20px 0; gap: 0; }
+            .nav-links li { width: 100%; text-align: center; }
+            .nav-links a { display: block; padding: 15px; border-bottom: 1px solid rgba(0,0,0,0.05); }
+            .linha { flex-direction: column; text-align: center; gap: 20px; padding-top: 30px; }
+            .col-2:first-child, .linha .col-2:last-child { transform: translateY(0); }
+            .col-2 h1 { font-size: 2rem; }
+            .produto-imagem-container { height: 300px; }
+            .produto-nome-home { font-size: 1.1rem; }
+            .btn-adicionar-home { width: 100%; padding: 10px; }
+        }
+        @media (max-width: 600px) {
+            .produtos-grid-home { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+            .produto-imagem-container { height: 220px; }
+            .col-3 { flex: 0 0 100%; max-width: 100%; margin-bottom: 15px; }
+            .col-3 .categoria-imagem-container { height: 350px; width: 100%; }
+            .produto-nome-home { font-size: 1rem; margin-bottom: 5px; }
+            .produto-preco-home { font-size: 1.1rem; margin-bottom: 10px; }
+            .btn-adicionar-home { padding: 8px 0; font-size: 0.9rem; width: 90%; }
+            .produto-info-home { padding: 10px; }
+        }
+
+        @media (max-width: 768px) {
+
+  /* Corrige alinhamento do conteúdo do banner */
+  .banner .col-2:first-child {
+    align-items: center;   /* 🔥 ESSENCIAL */
+    text-align: center;
+  }
+
+  /* Centraliza o botão de verdade */
+  .banner .btn {
+    align-self: center;    /* 🔥 força o centro no flex */
+    margin: 24px auto 0;
+  }
+
+}
+
+    </style>
+</head>
+<body>
+    <header>
+        <div class="navbar">
+            <div class="logo"><a href="home.html"><img src="assets/img/Logo fundo trans.png" alt="Loja Virtual Betel Canaã"></a></div>
+            <nav id="menu-mobile">
+                <ul class="nav-links" id="menu-itens">
+                    <li><a href="home.html">Home</a></li>
+                    <li><a href="produtos.html">Produtos</a></li>
+                    <li><a href="carrinho.html">Carrinho</a></li>
+                    <li id="login-item"><a href="login.html">Login</a></li>
+                    <li><a href="painel-admin.html">Admin</a></li>
+                </ul>
+            </nav>
+            <div class="header-icons">
+                <a href="carrinho.html" class="carrinho-icon"><img src="assets/img/sacola de compras.png" alt="Carrinho"></a>
+                <ion-icon name="menu-outline" class="menu-icon" onclick="toggleMenu()"></ion-icon>
+            </div>
+        </div>
+    </header>
+
+    <div class="banner">
+        <div class="container">
+            <div class="linha">
+                <div class="col-2 ">
+                    <h1 class="bem-vindo-compacto">Bem-vindo à Nossa Loja!</h1>
+                    <p>Fé Inabalável, Estilo Implacável. Vista Betel Canaã e Domine com a Verdade!</p>
+                    <a href="produtos.html" class="btn">Garanta já o seu! →</a>
+                </div>
+               <div class="col-2 banner-imagem">
+    <a href="produtos.html">
+        <img src="assets/img/modelo inicial.png" alt="Modelo">
+    </a>
+</div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="categorias">
+        <div class="corpo-categorias">
+            <h2>Categorias em Destaque</h2>
+            <div class="linha">
+                <div class="col-3"><a href="produtos.html"><div class="categoria-imagem-container"><img src="assets/img/categoria 1.png" alt="Masculino"></div><span>Masculino</span></a></div>
+                <div class="col-3"><a href="produtos.html"><div class="categoria-imagem-container"><img src="assets/img/categoria 2.png" alt="Feminino"></div><span>Feminino</span></a></div>
+                <div class="col-3"><a href="produtos.html"><div class="categoria-imagem-container"><img src="assets/img/categoria 3.png" alt="Infantil"></div><span>Infantil</span></a></div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="produtos-destaque">
+        <h2>Produtos em Destaque</h2>
+        <div class="produtos-grid-home" id="destaques-container">
+            <div class="loading-home">Carregando novidades...</div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-container">
+            <div class="footer-linha">
+                <div class="footer-col">
+                    <h3>Sobre Nós</h3>
+                    <p>Loja Betel Canaã - Fé Inabalável, Estilo Implacável.</p>
+                </div>
+                <div class="footer-col">
+                    <h3>Links Úteis</h3>
+                    <ul><li><a href="home.html">Home</a></li><li><a href="produtos.html">Produtos</a></li><li><a href="carrinho.html">Carrinho</a></li></ul>
+                </div>
+                <div class="footer-col">
+                    <h3>Contato</h3>
+                    <ul><li>Email: lojabetelcanaa@gmail.com</li><li>Telefone: (94) 99196-0824</li></ul>
+                </div>
+                <div class="footer-col">
+                    <h3>Redes Sociais</h3>
+                    <div class="social-links">
+                        <a href="https://www.instagram.com/betel_canaa?igsh=MWFwNGo0Ynh2aGQzeA=="><ion-icon name="logo-instagram"></ion-icon></a>
+                        <a href="https://wa.me/5594991600065" target="_blank"><ion-icon name="logo-whatsapp"></ion-icon></a>
+                    </div>
+                </div>
+            </div>
+            <div class="copyright"><p>&copy; 2025 Betel Canaã.</p></div>
+        </div>
+    </footer>
+
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    
+    <script>
+        let listaProdutos = [];
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            atualizarInterfaceUsuario();
+            await carregarDestaques();
+        });
+
+        function toggleMenu() {
+            const nav = document.getElementById('menu-mobile');
+            nav.classList.toggle('active');
+        }
+
+        function atualizarInterfaceUsuario() {
+            const token = localStorage.getItem('token');
+            const nomeUsuario = localStorage.getItem('usuario_nome');
+            const loginItem = document.getElementById('login-item');
+            const menu = document.getElementById('menu-itens');
+
+            if (token) {
+                if (nomeUsuario) {
+                    const primeiroNome = nomeUsuario.split(' ')[0];
+                    const titulo = document.querySelector('.bem-vindo-compacto');
+                    if(titulo) titulo.innerHTML = `Olá, ${primeiroNome},<br>Bem-vindo à Nossa Loja!`;
+                }
+                if (!document.getElementById('link-minhas-compras')) {
+                    const liCompras = document.createElement('li');
+                    liCompras.id = 'link-minhas-compras';
+                    liCompras.innerHTML = '<a href="meus-pedidos.html">Minhas Compras</a>';
+                    menu.insertBefore(liCompras, loginItem);
+                }
+                if (loginItem) loginItem.innerHTML = '<a href="#" onclick="logout(event)">Sair</a>';
+            }
+        }
+
+        function logout(e) {
+            if(e) e.preventDefault();
+            localStorage.removeItem('token');
+            localStorage.removeItem('usuario_nome');
+            window.location.href = 'login.html'; 
+        }
+
+        async function carregarDestaques() {
+            const container = document.getElementById('destaques-container');
+            try {
+                const response = await fetch('/api/produtos');
+                if (!response.ok) throw new Error('Erro na API');
+                
+                listaProdutos = await response.json();
+                const destaques = listaProdutos.slice(0, 3);
+                
+                container.innerHTML = ''; 
+
+                if (destaques.length === 0) {
+                    container.innerHTML = '<div class="loading-home">Nenhum produto em destaque.</div>';
+                    return;
+                }
+
+                destaques.forEach(produto => {
+                    const imagemSrc = produto.imagem ? produto.imagem : 'assets/img/sem-foto.png';
+                    const html = `
+                        <div class="produto-card-home">
+                            <div class="produto-imagem-container">
+                                <a href="produto-detalhes.html?id=${produto.id}">
+                                    <img src="${imagemSrc}" alt="${produto.nome}" class="produto-imagem-home" 
+                                         onerror="this.src='https://via.placeholder.com/300?text=Sem+Foto'">
+                                </a>
+                            </div>
+                            <div class="produto-info-home">
+                                <span class="produto-categoria-home">${produto.categoria || 'Oferta'}</span>
+                                <h3 class="produto-nome-home">${produto.nome}</h3>
+                                <p class="produto-descricao-home">${produto.descricao || ''}</p>
+                                <div class="produto-preco-home">R$ ${produto.preco.toFixed(2)}</div>
+                                <button class="btn-adicionar-home" onclick="adicionarAoCarrinho(${produto.id})">Adicionar ao Carrinho</button>
+                            </div>
+                        </div>
+                    `;
+                    container.innerHTML += html;
+                });
+            } catch (error) {
+                console.error(error);
+                container.innerHTML = '<div class="loading-home">Erro ao carregar produtos.</div>';
+            }
+        }
+
+        // === ADICIONAR AO CARRINHO CORRIGIDO ===
+        function adicionarAoCarrinho(id) {
+            const produto = listaProdutos.find(p => p.id === id);
+            if (produto) {
+                let carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
+                if (!Array.isArray(carrinho)) carrinho = [];
+
+                const itemExistente = carrinho.find(item => item.productId === id);
+
+                if (itemExistente) {
+                    itemExistente.quantidade += 1;
+                    itemExistente.subtotal = itemExistente.quantidade * itemExistente.preco;
+                } else {
+                    carrinho.push({
+                        productId: produto.id,
+                        nome: produto.nome,
+                        preco: produto.preco,
+                        imagem: produto.imagem,
+                        categoria: produto.categoria,
+                        quantidade: 1,
+                        subtotal: produto.preco
+                    });
+                }
+                localStorage.setItem('carrinho', JSON.stringify(carrinho));
+                
+                if(confirm(`${produto.nome} adicionado ao carrinho!\nDeseja ir para o carrinho agora?`)) {
+                    window.location.href = 'carrinho.html';
+                }
+            }
+        }
+    </script>
+</body>
+</html>
